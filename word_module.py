@@ -270,7 +270,7 @@ def calculate_handlen(hand):
     return len(hand)  # returns length of the hand dealt
 
 
-def play_hand(hand, word_list):
+def play_hand(hand, word_list, ask_replay, short_circuit = False):
     """
     Allows the user to play the given hand, as follows:
 
@@ -300,8 +300,8 @@ def play_hand(hand, word_list):
 
     """
 
-    n = calculate_handlen(hand)  # caltulating size of the hand dealt
-
+    n = 1 if short_circuit else calculate_handlen(hand)  # caltulating size of the hand dealt
+    end_requested = False
     # playing until letters left in hand or input "!!"
     total_score = 0  # will iteratively add to it after every word played
     while n > 0:
@@ -315,6 +315,7 @@ def play_hand(hand, word_list):
         # if player inputs "!!", break the loop
         if word == '!!':
             print(f'You finished this hand. Total score {total_score}')
+            end_requested = True
             break
 
 
@@ -328,17 +329,30 @@ def play_hand(hand, word_list):
                                             letter_values=SCRABBLE_LETTER_VALUES)  # count score for played word
                 print(f'\"{word}\" earned you {word_score} points')
                 total_score += word_score  # count total score
-
-            # Reject with a message if the word is not valid
+                hand = update_hand(hand, word)  # update the user's hand by removing the letters of their inputted word
+                # Reject with a message if the word is not valid
             else:
                 print(f'Invalid word. Please enter a valid word.')
 
-            hand = update_hand(hand, word)  # update the user's hand by removing the letters of their inputted word
             n = len(hand)  # update the number of letters left in hand
 
-        # shows the user the total score after each play of word
-        print(f'You finished this hand. Total score: {total_score}')
-
+    # shows the user the total score after each play of word
+    if not end_requested:
+        print(f'You finished this hand.', end=' ')
+        if ask_replay:
+            print(f'Current score: {total_score}.')
+            wants_replay = input('Do you want to replay this hand? (y/n): ')
+            if wants_replay == 'y':
+                score = play_hand(deal_hand(), word_list, False, True)
+                if(score > total_score):
+                    score_type = 'replay'
+                else:
+                    score_type = 'original'
+                print(f'The {score_type} score was higher and will be used as the total score for this round')
+                total_score = max(score, total_score)
+                print(f'Total score for this hand: {total_score}')
+            elif not short_circuit:
+                print(f'Current score: {total_score}')
     # Returns the total score as result of function after hand is finished
     return total_score
 

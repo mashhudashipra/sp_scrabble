@@ -42,7 +42,7 @@ Allow the user to play a series of hands
 """
 
 # print welcome message and get going
-print("Welcome to the physics718 word game!")
+print("Welcome single player scrabble!")
 print("====================================")
 print()
 
@@ -60,31 +60,32 @@ flag = 1                     #flag to make sure user is not asked to substitute 
 #for loop to run play_hand the number of times user inputs in hand_num
 for i in range(hand_num):
     hand = wm.deal_hand(n=hand_size, vowels=wm.VOWELS, consonants=wm.CONSONANTS)    #deal hands
-    wm.display_hand(hand)                                                           #display the hand
+                                                              #display the hand
 
     #condition to check for user requested substitute hand
     if flag:
     #if something == 1:
+        wm.display_hand(hand)
         def ask_input(hand):
             sub_input = input("Do you want to substitute a letter? y/n: ")
+            is_positive = sub_input == 'y'
 
             #condition to substitute letters if the user asks
-            if sub_input == 'y':
+            if is_positive:
                 letter = str(input("Which letter would you like to substitute? "))
 
-                if letter in hand:
-                    return wm.substitute_hand(hand, letter)
-                else:
-                    print("Letter is not in the hand.")
+                while letter not in hand:
+                    letter = str(input("Letter is not in the hand. Please choose one from the hand: "))
+                return wm.substitute_hand(hand, letter), False
             # something = 0
             elif sub_input != 'n':
                 return ask_input(hand)
-            return hand
+            return hand, not is_positive
 
-        hand = ask_input(hand)
-        flag = not flag
+        hand, flagRes = ask_input(hand)
+        flag = flagRes
 
-    play_game = wm.play_hand(hand, word_list)                #playing the game
+    play_game = wm.play_hand(hand, word_list, flag)                #playing the game
     total_score = total_score + play_game                    #calculates the total score after each hand
 
 print(f'Total score over {hand_num} hands: {total_score}')   #prints out total score after the whole game

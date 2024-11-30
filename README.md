@@ -1,4 +1,4 @@
-# Project 2 - The physics725 Word-Game (Level 1)
+# Single Player Scrabble
 (This project is based on a project from MIT Open Course Ware [course 6-0001](https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-0001-introduction-to-computer-science-and-programming-in-python-fall-2016/))
 
 ## Introduction
@@ -23,3 +23,11 @@ The specific rules are as follows:
            $w_l$ is the number of letters used in the word and $n$ is the number of letters available in the current hand.
     3. Letters are scored as in Scrabble; `a` is worth 1, `b` is worth 3, `c` is worth 3, `d` is worth 2, `e` is worth 1, and so on. We already have defined the dictionary `SCRABBLE_LETTER_VALUES` with those values for you.
     4. **Example:** If $n=6$ and the hand includes 1 `w`, 2 `e`s, and 1 `d` (as well as two other letters), playing the word `weed` would be worth 176 points: $(4+1+1+2) \cdot (7\cdot 4 - 3\cdot(6-4)) = 176$. The first term is the sum of the values of each letter used; the second term is the special computation that rewards a player for playing a longer word, and penalizes them for any left over letters.
+3. *Hand substitution*
+   1. the player can choose to substitute a letter from the hand once the hand is dealt.
+   2. Hand substitution can only be done once in the game.
+4. *Replay hand*
+   1. The player can choose to replay the previous hand to try and get more points
+   2. Whatever score is higher will be added to the total score
+   3. If a player substituted a letter during this hand, he cannot replay the hand
+   4. This action is only possible once per game
